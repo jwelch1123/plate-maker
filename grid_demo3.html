@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Grid Demo</title>
+    <style>
+      .box {
+        width: 50px;
+        height: 50px;
+        border: 1px solid black;
+        float: left;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      /* Clear the float after every 12th box */
+      .box:nth-child(12n+1) {
+        clear: both;
+      }
+
+      /* Add margin to the right and bottom of each box */
+      .box:not(:last-child) {
+        margin-right: 1px;
+        margin-bottom: 1px;
+      }
+
+      .box.active-blue {
+        background-color: blue;
+      }
+
+      .box.active-red {
+        background-color: red;
+      }
+
+      .box.active-black {
+        background-color: black;
+      }
+
+      .color-selector {
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+
+      .color-selector div {
+        width: 30px;
+        height: 30px;
+        border: 1px solid black;
+        float: left;
+        margin-right: 5px;
+        cursor: pointer;
+      }
+
+      .color-selector div.active {
+        outline: 2px solid blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="color-selector">
+      <div class="blue active"></div>
+      <div class="red"></div>
+      <div class="black"></div>
+    </div>
+    <div id="grid"></div>
+    <script>
+      var grid = document.getElementById('grid');
+      for (var i = 0; i < 8; i++) {
+        for (var j = 0; j < 12; j++) {
+          var box = document.createElement('div');
+          box.classList.add('box');
+          box.setAttribute('data-row', i);
+          box.setAttribute('data-col', j);
+          box.addEventListener('mousedown', handleMouseDown);
+          box.addEventListener('mouseover', handleMouseMove);
+          grid.appendChild(box);
+        }
+      }
+
+      var isMouseDown = false;
+      var startBox = null;
+      var selectedColor = 'blue';
+
+      function handleMouseDown() {
+        isMouseDown = true;
+        startBox = this;
+        toggleBox(this);
+      }
+
+      function handleMouseMove() {
+        if (isMouseDown && this !== startBox) {
+          var startX = startBox.offsetLeft + startBox.offsetWidth / 2;
+          var startY = startBox.offsetTop + startBox.offsetHeight / 2;
+          var endX = this.offsetLeft + this.offsetWidth / 2;
+          var endY = this.offsetTop + this.offsetHeight / 2;
+
+          var minX = Math.min(startX, endX);
+          var maxX = Math.max(startX, endX);
+          var minY = Math.min(startY, endY);
+          var maxY = Math.max(startY, endY);
+
+          var boxes = document.querySelectorAll('.box');
+          boxes.forEach(function(box) {
+            var centerX = box.offsetLeft + box.offsetWidth / 2;
+            var centerY = box.offsetTop + box.offsetHeight / 2;
+            var isActive = box.classList.contains('active-' + selectedColor);
+            var isPermanent = box.classList.contains('permanent');
+            if (centerX >= minX && centerX <= maxX && centerY >= minY && centerY <= maxY) {
+              if (!isActive && !isPermanent) {
+                toggleBox(box);
+              }
+            } else {
+              if (isActive && !isPermanent) {
+                toggleBox(box);

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Color Selector</title>
+	<style>
+		/* CSS to style the color selector and boxes */
+		#color-selector {
+			display: inline-block;
+			position: relative;
+			margin-right: 20px;
+		}
+		#color-selector select {
+			padding: 5px;
+			font-size: 16px;
+			border: none;
+			background-color: #f1f1f1;
+		}
+		#grid-container {
+			display: inline-block;
+			position: relative;
+		}
+		.box {
+			display: inline-block;
+			width: 50px;
+			height: 50px;
+			border: 1px solid #ccc;
+			margin-right: -1px;
+			margin-bottom: -1px;
+			background-color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<!-- HTML for the color selector and grid of boxes -->
+	<div id="color-selector">
+		<select id="color">
+			<option value="blue">Blue</option>
+			<option value="red">Red</option>
+			<option value="black">Black</option>
+		</select>
+	</div>
+	<div id="grid-container">
+		<div id="grid">
+			<!-- Create a grid of 12x8 boxes -->
+			<script>
+				for (var i = 1; i <= 96; i++) {
+					document.write('<div class="box" id="box'+i+'"></div>');
+					if (i % 12 == 0) {
+						document.write('<br>');
+					}
+				}
+			</script>
+		</div>
+	</div>
+	<script src="color-selector.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Grid Demo</title>
+    <style>
+      #color-selector {
+        display: inline-block;
+        position: relative;
+        margin-right: 20px;
+      }
+      #color-selector select {
+        padding: 5px;
+        font-size: 16px;
+        border: none;
+        background-color: #f1f1f1;
+      }
+      .box {
+        width: 50px;
+        height: 50px;
+        border: 1px solid black;
+        float: left;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      /* Clear the float after every 12th box */
+      .box:nth-child(12n+1) {
+        clear: both;
+      }
+
+      /* Add margin to the right and bottom of each box */
+      .box:not(:last-child) {
+        margin-right: 1px;
+        margin-bottom: 1px;
+      }
+      .box.active {
+      background-color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="color-selector">
+      <select id="color">
+        <option value="blue">Blue</option>
+        <option value="red">Red</option>
+        <option value="black">Black</option>
+      </select>
+    </div>
+    <div id="grid">
+    </div>
+    <script>
+      // Create the grid
+      var grid = document.getElementById('grid');
+      for (var i = 0; i < 8; i++) {
+        for (var j = 0; j < 12; j++) {
+          var box = document.createElement('div');
+          box.classList.add('box');
+          box.setAttribute('data-row', i);
+          box.setAttribute('data-col', j);
+          box.addEventListener('mousedown', handleMouseDown);
+          box.addEventListener('mouseover', handleMouseMove);
+          box.addEventListener('click', function() { changeBoxColor(this); });
+          grid.appendChild(box);
+        }
+      }
+
+      var isMouseDown = false;
+      var startBox = null;
+
+      function handleMouseDown() {
+        isMouseDown = true;
+        startBox = this;
+        toggleBox(this);
+      }
+
+      function handleMouseMove() {
+        if (isMouseDown && this !== startBox) {
+          var startX = startBox.offsetLeft + startBox.offsetWidth / 2;
+          var startY = startBox.offsetTop + startBox.offsetHeight / 2;
+          var endX = this.offsetLeft + this.offsetWidth / 2;
+          var endY = this.offsetTop + this.offsetHeight / 2;
+
+          var minX = Math.min(startX, endX);
+          var maxX = Math.max(startX, endX);
+          var minY = Math.min(startY, endY);
+          var maxY = Math.max(startY, endY);
+
+          var boxes = document.querySelectorAll('.box');
+          boxes.forEach(function(box) {
+            var centerX = box.offsetLeft + box.offsetWidth / 2;
+            var centerY = box.offsetTop + box.offsetHeight / 2;
+            var isActive = box.classList.contains('active');
+            var isPermanent = box.classList.contains('permanent');
+            if (centerX >= minX && centerX <= maxX && centerY >= minY && centerY <= maxY) {
+              if (!isActive && !isPermanent) {
+                toggleBox(box);
+              }
+            } else {
+              if (isActive && !isPermanent) {
+                toggleBox(box);
+              }
+            }
+          });
+        }
+      }
+
+
+      function toggleBox(box) {
+        if (box.classList.contains('permanent')) {
+          box.classList.remove('active');
+          box.classList.remove('permanent');
+        } else if (box.classList.contains('active')){
+          box.classList.remove('active');
+        } else {
+          box.classList.add('active');
+          box.classList.add('permanent');
+        }
+      }
+
+      document.addEventListener('mouseup', function() {
+        isMouseDown = false;
+        startBox = null;
+      });
+      src="color-selector.js"
+    </script>
+  </body>
+</html>

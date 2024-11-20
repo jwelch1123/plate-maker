@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Webpage</title>
+  <style>
+    .first-level-box {
+      width: 280px;
+      height: 100%;
+      margin: 10px;
+      border: 1px solid black;
+      padding: 10px;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+
+    .selected {
+      outline: 2px solid black;
+    }
+
+    .text-field {
+      display: inline-block;
+      height: 20px;
+      vertical-align: middle;
+    }
+
+    .data-input {
+      display: inline-block;
+      height: 15px;
+      width: 30px;
+      vertical-align: middle;
+    }
+
+    .box {
+        width: 50px;
+        height: 50px;
+        border: 1px solid black;
+        float: left;
+        background-color: white;
+        cursor: pointer;
+      }
+
+  </style>
+</head>
+<body>
+  <h1>Plate Mapper</h1>
+  <h3>by James Welch -  <a href="https://github.com/jwelch1123">Github</a> </h3>
+  <div id="container">
+    <div class="first-level-box selected"  onclick="toggleSelection(this)"> 
+      <input type="color" id='colorbox' name='colorbox' value="#e66465">
+      <input type="text" class="text-field" placeholder="Enter text here...">
+      <button type="delete-button" onclick="deleteFirstLevelBox(this)">X</button>
+    </div>
+
+  </div>
+
+  <button onclick="addFirstLevelBox()">Add Box</button>
+
+  <br></br>
+
+  <table> <!-- Table to organize Column & Row: labels & values -->
+    <tr>
+      <td>
+        <label for="columns">Columns:</label>
+      </td>
+      <td>
+        <input class="data-input" type="number" id="columns" name="columns" value="12">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="rows">Rows:</label>
+      </td>
+      <td>
+        <input class="data-input" type="number" id="rows" name="rows" value="8">
+      </td>
+    </tr>
+  </table>
+
+  <br></br>
+  <div class='grid' id="grid"><!--Magic--></div>
+  <script>
+
+
+    // Functions to handel the label colors & Selection
+    function toggleSelection(element) {
+      var selectableElements = document.querySelectorAll('.selected');
+      for (var i = 0; i < selectableElements.length; i++) {
+        selectableElements[i].classList.remove('selected');
+      }
+      element.classList.add('selected');
+    }
+
+    function deleteFirstLevelBox(element) {
+      element.parentNode.remove();
+    }
+
+    let boxCounter = 0;
+
+    function addFirstLevelBox() {
+      const container = document.getElementById('container');
+      const newBox = document.createElement('div');
+      const boxId = 'box-' + boxCounter++;
+      boxCounter++;
+      
+      newBox.id = boxId;
+      newBox.className = 'first-level-box';
+      newBox.onclick = function() {toggleSelection(this)};
+      newBox.innerHTML = `
+      <input type="color" id='${boxId}-colorbox' name='${boxId}-colorbox' value="#000000">
+      <input type="text" class="text-field" placeholder="Enter text here...">
+      <button type="delete-button" onclick="deleteFirstLevelBox(this)">X</button>
+      `;
+      container.appendChild(newBox);
+    }
+
+    
+    // Functions to handle Grid creation
+    var columnsInput = document.getElementById('columns');
+    var rowsInput = document.getElementById('rows');
+    var grid = document.getElementById('grid');
+
+    function drawGrid(){
+      grid.innerHTML = "";
+
+      var columns = parseInt(columnsInput.value);
+      var rows = parseInt(rowsInput.value); 
+
+      for (var i = 0; i < rows; i++) {
+        for (var j = 0; j < columns; j++) {
+          var box = document.createElement('div');
+          box.classList.add('box');
+          box.setAttribute('data-row', i);
+          box.setAttribute('data-col', j);
+          box.addEventListener('mousedown', handleMouseDown);
+          box.addEventListener('mouseover', handleMouseMove);
+          
+          //box.addEventListener('click', function() { applyColorLabel(this); });
+          grid.appendChild(box);
+        }
+      }
+    }
+    drawGrid();
+    columnsInput.addEventListener('change', drawGrid);
+    rowsInput.addEventListener('change', drawGrid);
+
+    var isMouseDown = false;
+    var startBox = null;
+
+    function handleMouseDown() {
+      isMouseDown = true;
+      startBox = this;
+      applyColorLabel(this);
+    }
+
+    function handleMouseUp() {
+      isMouseDown = false;
+      startBox = null;
+    }
+
+    function handleMouseMove() {
+      if (isMouseDown && this !== startBox) {
+        var startX = startBox.offsetLeft + startBox.offsetWidth / 2;
+        var startY = startBox.offsetTop + startBox.offsetHeight / 2;
+        var endX = this.offsetLeft + this.offsetWidth / 2;
+        var endY = this.offsetTop + this.offsetHeight / 2;
+
+        var minX = Math.min(startX, endX);
+        var maxX = Math.max(startX, endX);
+        var minY = Math.min(startY, endY);
+        var maxY = Math.max(startY, endY);
+
+        var boxes = document.querySelectorAll('.box');
+        boxes.forEach(function(box) {
+          var centerX = box.offsetLeft + box.offsetWidth / 2;
+          var centerY = box.offsetTop + box.offsetHeight / 2;
+          if (centerX >= minX && centerX <= maxX && centerY >= minY && centerY <= maxY) {
+            applyColorLabel(box);
+          } 
+        });
+      }
+    }
+    document.addEventListener('mouseup', handleMouseUp)
+
+
+    // Function to handle box color change
+    function applyColorLabel(box){
+      var color = document.querySelector('.selected').querySelector('#colorbox').value;
+      var boxColor = box.style.backgroundColor;
+      if (boxColor != 'white' && boxColor != ''){
+        box.style.backgroundColor = 'white';
+      } else {
+        box.style.backgroundColor = color;
+      }
+    }
+
+
+    function updateCSSSelector() {
+      var columns = columnsInput.value;
+      var selector = '.box:nth-child(' + columns + 'n+1)';
+      var cssRule = 'clear: both;';
+
+      var styleSheet = document.styleSheets[0];
+      var ruleIndex = findCSSRuleIndex(styleSheet, '.box:nth-child');
+
+      if (ruleIndex !== -1) {
+        styleSheet.deleteRule(ruleIndex);
+      }
+      styleSheet.insertRule(selector + ' {' + cssRule + '}', styleSheet.cssRules.length);
+    }
+
+    function findCSSRuleIndex(styleSheet, selector){
+      for (var i = 0; i < styleSheet.cssRules.length; i++) {
+        if (styleSheet.cssRules[i].selectorText.startsWith(selector)) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    // Call the updateCSSSelector function whenever the columns value changes
+    updateCSSSelector();
+    columnsInput.addEventListener('change', updateCSSSelector);
+    rowsInput.addEventListener('change', updateCSSSelector);
+
+  </script>
+</body>
+</html>

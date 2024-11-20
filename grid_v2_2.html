@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Webpage</title>
+  <style>
+    .first-level-box {
+      width: 200px;
+      height: 100%;
+      margin: 10px;
+      border: 1px solid black;
+      padding: 1px;
+    }
+
+    .second-level-box {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin: 10px;
+      border: 1px solid black;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+
+    .text-field {
+      height: 20px;
+      vertical-align: middle;
+    }
+
+    .color-popup {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+    }
+
+    .color-option {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      margin: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div class="first-level-box">
+      <div class="second-level-box" style="background-color: red;" onclick="openColorPopup(this)"></div>
+      <input type="text" class="text-field" placeholder="Enter text here...">
+    </div>
+
+    <div class="first-level-box">
+      <div class="second-level-box" style="background-color: blue;" onclick="openColorPopup(this)"></div>
+      <input type="text" class="text-field" placeholder="Enter text here...">
+    </div>
+
+    <div class="first-level-box">
+      <div class="second-level-box" style="background-color: green;" onclick="openColorPopup(this)"></div>
+      <input type="text" class="text-field" placeholder="Enter text here...">
+    </div>
+  </div>
+
+  <button onclick="addFirstLevelBox()">Add Box</button>
+
+  <div id="colorPopup" class="color-popup">
+    <div class="color-option" style="background-color: red;" onclick="changeColor(this)"></div>
+    <div class="color-option" style="background-color: green;" onclick="changeColor(this)"></div>
+    <div class="color-option" style="background-color: blue;" onclick="changeColor(this)"></div>
+    <div class="color-option" style="background-color: yellow;" onclick="changeColor(this)"></div>
+    <div class="color-option" style="background-color: orange;" onclick="changeColor(this)"></div>
+    <div class="color-option" style="background-color: purple;" onclick="changeColor(this)"></div>
+    <div class="color-option" style="background-color: black;" onclick="changeColor(this)"></div>
+    <div class="color-option" style="background-color: white;" onclick="changeColor(this)"></div>
+  </div>
+
+  <script>
+    let currentColorBox = null;
+
+    function openColorPopup(box) {
+      currentColorBox = box;
+      const color
