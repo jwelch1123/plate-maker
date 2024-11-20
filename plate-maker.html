@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Webpage</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Plate Mapper</h1>
+<h3>by James Welch -  <a href="https://github.com/jwelch1123">Github</a> </h3>
+<div id="container"></div>
+    <div class="ingredient-box selected-ingredient"  onclick="toggleSelection(this)"> 
+      <input type="color" id='colorbox' name='colorbox' value="#e66465">
+      <input type="text" class="text-field" placeholder="Enter text here...">
+      <button type="delete-button" onclick="deleteIngredientBox(this)">X</button>
+    </div>
+
+  </div>
+
+  <button onclick="addIngredient()">Add Ingredient</button>
+
+  <br></br>
+
+  <table> <!-- Table to organize Column & Row: labels & values -->
+    <tr>
+      <td>
+        <label for="columns">Columns:</label>
+      </td>
+      <td>
+        <input class="data-input" type="number" id="columns" name="columns" value="12">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="rows">Rows:</label>
+      </td>
+      <td>
+        <input class="data-input" type="number" id="rows" name="rows" value="8">
+      </td>
+    </tr>
+  </table>
+
+  <br></br>
+  <div>
+    <div class='grid' id="grid"><!--Magic--></div>
+  </div>
+
+  <script src="scripts.js"></script>
+
+</body>
+</html>
