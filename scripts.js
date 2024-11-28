@@ -9,6 +9,7 @@ function toggleSelection(element) {
 
   function deleteIngredientBox(element) {
     element.parentNode.remove();
+
   }
 
   let boxCounter = 0;
@@ -16,7 +17,7 @@ function toggleSelection(element) {
   function addIngredient() {
     const container = document.getElementById('container');
     const newBox = document.createElement('div');
-    const boxId = 'box-' + boxCounter++;
+    const boxId = 'ingredient-box-' + boxCounter++;
     boxCounter++;
     const rand_color = '#' + Math.floor(Math.random() * 16777215).toString(16);
 
@@ -56,7 +57,6 @@ function toggleSelection(element) {
         box.addEventListener('mouseover', handleMouseMove);
         box.style.backgroundColor = 'white';
         
-        //box.addEventListener('click', function() { applyColorLabel(this); });
         grid.appendChild(box);
       }
     }
@@ -71,6 +71,7 @@ function toggleSelection(element) {
 var isMouseDown = false;
 var startRowIndex = null;
 var startColIndex = null;
+var selectedBoxes = [];
 
 function selectTo(box) {
     var rowIndex = parseInt(box.getAttribute('data-row'));
@@ -84,8 +85,16 @@ function selectTo(box) {
     for (var i = rowStart; i <= rowEnd; i++) {
         for (var j = colStart; j <= colEnd; j++) {
             var cell = grid.querySelector(`.box[data-row='${i}'][data-col='${j}']`);
-            if (cell) {
-                cell.classList.add('selected-cell');
+            if (cell && !selectedBoxes.includes(cell)) {
+                //console.log(`Selecting cell at row: ${i}, col: ${j}`);
+                //console.log(cell);
+                if (cell.classList.contains('selected-cell')) {
+                    cell.classList.remove('selected-cell');
+                } else {
+                    cell.classList.add('selected-cell');
+                }
+                selectedBoxes.push(cell);
+                applyColorLabel(cell);
             }
         }
     }
@@ -93,25 +102,22 @@ function selectTo(box) {
 
 function handleMouseDown(event) {
     isMouseDown = true;
+    selectedBoxes = [];
     var box = this;
-    applyColorLabel(this);
-
-    grid.querySelectorAll('.selected-cell').forEach(function (cell) {
-        cell.classList.remove('selected-cell');
-    });
 
     startRowIndex = parseInt(box.getAttribute('data-row'));
     startColIndex = parseInt(box.getAttribute('data-col'));
 
-    if (event.shiftKey) {
-        selectTo(box);
+    if (box.classList.contains('selected-cell')){
+        box.classList.remove('selected-cell');
     } else {
         box.classList.add('selected-cell');
     }
+    selectedBoxes.push(box);
+    applyColorLabel(box);
+
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-
-    console.log(`Cell clicked at row: ${startRowIndex}, col: ${startColIndex}`);
 
     return false; // prevent text selection
 }
@@ -121,11 +127,6 @@ function handleMouseMove(event) {
     var box = document.elementFromPoint(event.clientX, event.clientY);
     if (box && box.classList.contains('box')) {
         selectTo(box);
-        grid.querySelectorAll('.selected-cell').forEach(function (cell) {
-            //cell.classList.remove('selected-cell');
-            applyColorLabel(cell);
-        });
-        console.log(`Mouse moved over cell at row: ${box.getAttribute('data-row')}, col: ${box.getAttribute('data-col')}`);
     }
 }
 
@@ -144,15 +145,64 @@ document.addEventListener('mouseup', function () {
 function applyColorLabel(box){
     var color = document.querySelector('.selected-ingredient').querySelector('input[type="color"]').value;
     var boxColor = box.style.backgroundColor;
-    console.log("boxColor: " + boxColor + " color: " + color);
-    if (boxColor != 'white' && boxColor != ''){
-        box.style.backgroundColor = 'white';
-    } else if (boxColor == color) {
+    var selected = box.classList.contains('selected-cell');
+
+    if (selected) {
         box.style.backgroundColor = color;
     } else {
-        box.style.backgroundColor = color;
+        box.style.backgroundColor = ''; // Reset to original CSS styling
     }
 }
 
 
-// color change flickers and the comparison between hex and rgb doesnt work
+// Create the standardized plate notation
+function toPlateNotation(row, col) {
+    return String.fromCharCode(65 + parseInt(row)) + (parseInt(col) + 1);
+}
+
+// General copy text to clipboard function
+function textToClipboard (text) {
+    var copyPastePlaceholder = document.createElement("textarea");
+    document.body.appendChild(copyPastePlaceholder);
+    copyPastePlaceholder.value = text;
+    copyPastePlaceholder.select();
+    document.execCommand("copy");
+    document.body.removeChild(copyPastePlaceholder);
+}
+
+// Function to export the plate map
+function exportPlateMap() {
+    var grid = document.getElementById('grid');
+    var boxes = grid.querySelectorAll('.box');
+    var includeBlanks = document.getElementById('include-blank').checked;
+    var bkgdColor = grid.style.backgroundColor;
+    
+    var plate_str = '';
+    var label = ["Well ID","Well Coordinate","Row","Column","Color"].join('\t') + '\n';
+    plate_str += label;
+
+
+
+    for (var i = 0; i < boxes.length; i++) {
+        var box = boxes[i];
+        let nth = i + 1;
+        let plate_note = toPlateNotation(box.dataset.row, box.dataset.col);
+        let row = parseInt(box.dataset.row) + 1;
+        let col = parseInt(box.dataset.col) + 1;
+        let color = box.style.backgroundColor;
+        let text = [nth, plate_note, row, col, color].join('\t');
+
+        if (includeBlanks || box.classList.contains('selected-cell')) {
+            plate_str += text+'\n';
+        }
+        
+    }
+    
+    textToClipboard(plate_str);
+
+    document.getElementById('copy-button').innerHTML = 'Copied!';
+    setTimeout(function() {
+        document.getElementById('copy-button').innerHTML = 'Export Plate Map';
+    }, 3000);
+
+}
