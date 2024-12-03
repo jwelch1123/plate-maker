@@ -1,26 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Webpage</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plate Maker</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <h1>Plate Mapper</h1>
-<h3>by James Welch -  <a href="https://github.com/jwelch1123">Github</a> </h3>
-<div id="container">
-    <div class="ingredient-box selected-ingredient"  onclick="toggleSelection(this)"> 
-      <input type="color" id='colorbox' name='colorbox' value="#e66465">
-      <input type="text" class="text-field" placeholder="Enter text here...">
-      <button type="delete-button" onclick="deleteIngredientBox(this)">X</button>
-    </div>
+  <div>
+    <h1>Plate Maker</h1>
+    <h3>by James Welch - <a href="https://github.com/jwelch1123/plate-maker">Github</a> </h3>
 
   </div>
-
-  <button onclick="addIngredient()">Add Ingredient</button>
-
-  <br></br>
 
   <table> <!-- Table to organize Column & Row: labels & values -->
     <tr>
@@ -41,6 +34,11 @@
     </tr>
   </table>
 
+  <!-- had the add as a mini box (half size) below the ingredients -->
+  <div id="ingredients-container"> <!-- Dynamically Created --> </div>
+
+  <button id='add-ingredient-button' onclick="addIngredient()">Add Ingredient</button>
+
   <br></br>
   <div>
     <div class='grid' id="grid"><!--Magic--></div>
@@ -57,4 +55,5 @@
   <script src="scripts.js"></script>
 
 </body>
+
 </html>

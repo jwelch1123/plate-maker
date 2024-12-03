@@ -2,68 +2,106 @@
 function toggleSelection(element) {
     var selectableElements = document.querySelectorAll('.selected-ingredient');
     for (var i = 0; i < selectableElements.length; i++) {
-      selectableElements[i].classList.remove('selected-ingredient');
+        selectableElements[i].classList.remove('selected-ingredient');
     }
     element.classList.add('selected-ingredient');
-  }
+}
 
-  function deleteIngredientBox(element) {
+function deleteIngredientBox(element) {
     element.parentNode.remove();
+}
 
-  }
+function rand_color() {
+    dim_1 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    dim_2 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');;
+    dim_3 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');;
+    return '#' + dim_1 + dim_2 + dim_3;
+}
 
-  let boxCounter = 0;
+let boxCounter = 0;
 
-  function addIngredient() {
-    const container = document.getElementById('container');
+function addIngredient() {
+    const container = document.getElementById('ingredients-container');
     const newBox = document.createElement('div');
-    const boxId = 'ingredient-box-' + boxCounter++;
-    boxCounter++;
-    const rand_color = '#' + Math.floor(Math.random() * 16777215).toString(16);
-
+    const boxId = 'ingredient-box-' + boxCounter;
     newBox.id = boxId;
     newBox.className = 'ingredient-box';
-    newBox.onclick = function() {toggleSelection(this)};
+    if (boxCounter == 0) {
+        newBox.classList.add('selected-ingredient');
+    }
+    newBox.onclick = function () { toggleSelection(this) };
     newBox.innerHTML = `
-        <input type="color" id='${boxId}-colorbox' name='${boxId}-colorbox' value="${rand_color}">
+        <input type="color" id='${boxId}-colorbox' name='${boxId}-colorbox' value="${rand_color()}">
         <input type="text" class="text-field" placeholder="Enter text here...">
         <button type="delete-button" onclick="deleteIngredientBox(this)">X</button>
         `;
     container.appendChild(newBox);
-  }
+    boxCounter++;
+}
+document.addEventListener('DOMContentLoaded', addIngredient);
+//document.getElementById('add-ingredient-button').addEventListener('click', addIngredient);
 
-  
-  // Functions to handle Grid creation
-  var columnsInput = document.getElementById('columns');
-  var rowsInput = document.getElementById('rows');
-  var grid = document.getElementById('grid');
 
-  function drawGrid(){
+// Functions to handle Grid creation
+var columnsInput = document.getElementById('columns');
+var rowsInput = document.getElementById('rows');
+var grid = document.getElementById('grid');
+
+
+// Add a way to capture what value gets drawn on the cell and then apply the styling from there.
+
+
+
+function drawGrid() {
     grid.innerHTML = "";
 
     var columns = parseInt(columnsInput.value);
-    var rows = parseInt(rowsInput.value); 
+    var rows = parseInt(rowsInput.value);
 
     grid.style.gridTemplateColumns = 'repeat(' + columns + ', 1fr)';
     grid.style.gridTemplateRows = 'repeat(' + rows + ', 1fr)';
 
     for (var i = 0; i < rows; i++) {
-      for (var j = 0; j < columns; j++) {
-        var box = document.createElement('div');
-        box.classList.add('box');
-        box.setAttribute('data-row', i);
-        box.setAttribute('data-col', j);
-        box.addEventListener('mousedown', handleMouseDown);
-        box.addEventListener('mouseover', handleMouseMove);
-        box.style.backgroundColor = 'white';
-        
-        grid.appendChild(box);
-      }
+        for (var j = 0; j < columns; j++) {
+            var box = document.createElement('div');
+            box.classList.add('box');
+            box.setAttribute('data-row', i);
+            box.setAttribute('data-col', j);
+            box.addEventListener('mousedown', handleMouseDown);
+            box.addEventListener('mouseover', handleMouseMove);
+            box.style.backgroundColor = 'white';
+
+            var ingredientHolder = document.createElement('div');
+            ingredientHolder.classList.add('ingredient-holder'); 
+            box.appendChild(ingredientHolder);
+
+            box.addIngredient = function (ingredient) {
+                var ingredientId = ingredient.id;
+                var ingredientColor = ingredient.querySelector('input[type="color"]').value;
+                var ingredientText = ingredient.querySelector('.text-field').value;
+
+                console.log(ingredientId, ingredientColor, ingredientText);
+
+                var ingredientInfo = document.createElement('span');
+                ingredientInfo.classList.add('ingredient-info');
+
+                ingredientInfo.dataset.ingredientId = ingredientId;
+                ingredientInfo.dataset.ingredientColor = ingredientColor;
+                ingredientInfo.dataset.ingredientText = ingredientText;
+
+                this.querySelector('.ingredient-holder').appendChild(ingredientInfo);
+
+            }
+
+
+            grid.appendChild(box);
+        }
     }
-  }
-  drawGrid();
-  columnsInput.addEventListener('change', drawGrid);
-  rowsInput.addEventListener('change', drawGrid);
+}
+//drawGrid();
+document.addEventListener('DOMContentLoaded', drawGrid);
+columnsInput.addEventListener('change', drawGrid);
+rowsInput.addEventListener('change', drawGrid);
 
 
 
@@ -86,8 +124,6 @@ function selectTo(box) {
         for (var j = colStart; j <= colEnd; j++) {
             var cell = grid.querySelector(`.box[data-row='${i}'][data-col='${j}']`);
             if (cell && !selectedBoxes.includes(cell)) {
-                //console.log(`Selecting cell at row: ${i}, col: ${j}`);
-                //console.log(cell);
                 if (cell.classList.contains('selected-cell')) {
                     cell.classList.remove('selected-cell');
                 } else {
@@ -108,7 +144,7 @@ function handleMouseDown(event) {
     startRowIndex = parseInt(box.getAttribute('data-row'));
     startColIndex = parseInt(box.getAttribute('data-col'));
 
-    if (box.classList.contains('selected-cell')){
+    if (box.classList.contains('selected-cell')) {
         box.classList.remove('selected-cell');
     } else {
         box.classList.add('selected-cell');
@@ -133,7 +169,7 @@ function handleMouseMove(event) {
 function handleMouseUp() {
     isMouseDown = false;
     document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp); 
+    document.removeEventListener('mouseup', handleMouseUp);
 }
 
 document.addEventListener('mouseup', function () {
@@ -141,14 +177,16 @@ document.addEventListener('mouseup', function () {
 });
 
 
-  // Function to handle box color change
-function applyColorLabel(box){
+// Function to handle box color change
+function applyColorLabel(box) {
     var color = document.querySelector('.selected-ingredient').querySelector('input[type="color"]').value;
-    var boxColor = box.style.backgroundColor;
     var selected = box.classList.contains('selected-cell');
+    var selectedIngredient = document.querySelector('.selected-ingredient');
 
     if (selected) {
         box.style.backgroundColor = color;
+        box.addIngredient(selectedIngredient);
+        console.log(box);
     } else {
         box.style.backgroundColor = ''; // Reset to original CSS styling
     }
@@ -161,13 +199,20 @@ function toPlateNotation(row, col) {
 }
 
 // General copy text to clipboard function
-function textToClipboard (text) {
-    var copyPastePlaceholder = document.createElement("textarea");
-    document.body.appendChild(copyPastePlaceholder);
-    copyPastePlaceholder.value = text;
-    copyPastePlaceholder.select();
-    document.execCommand("copy");
-    document.body.removeChild(copyPastePlaceholder);
+function copyToClipboard(text) {
+
+    // execcommand is deprecated in modern browsers, this should be the way to do it
+    navigator.clipboard.writeText(text).then(function () {
+        console.log('Async: Copying to clipboard was successful!');
+    }, function (err) {
+        console.error('Async: Could not copy text: ', err);
+        var copyPastePlaceholder = document.createElement("textarea");
+        document.body.appendChild(copyPastePlaceholder);
+        copyPastePlaceholder.value = text;
+        copyPastePlaceholder.select();
+        document.execCommand("copy");
+        document.body.removeChild(copyPastePlaceholder);
+    });
 }
 
 // Function to export the plate map
@@ -176,12 +221,10 @@ function exportPlateMap() {
     var boxes = grid.querySelectorAll('.box');
     var includeBlanks = document.getElementById('include-blank').checked;
     var bkgdColor = grid.style.backgroundColor;
-    
+
     var plate_str = '';
-    var label = ["Well ID","Well Coordinate","Row","Column","Color"].join('\t') + '\n';
+    var label = ["Well ID", "Well Coordinate", "Row", "Column", "Color", "Ingredients"].join('\t') + '\n';
     plate_str += label;
-
-
 
     for (var i = 0; i < boxes.length; i++) {
         var box = boxes[i];
@@ -190,18 +233,29 @@ function exportPlateMap() {
         let row = parseInt(box.dataset.row) + 1;
         let col = parseInt(box.dataset.col) + 1;
         let color = box.style.backgroundColor;
-        let text = [nth, plate_note, row, col, color].join('\t');
+
+        let ingredients = box.querySelectorAll('.ingredient-info');
+        let ingredientsList = '';
+        for (var j = 0; j < ingredients.length; j++) {
+            let ingredient = ingredients[j];
+            let ingredientId = ingredient.dataset.ingredientId;
+            let ingredientColor = ingredient.dataset.ingredientColor;
+            let ingredientText = ingredient.dataset.ingredientText;
+            ingredientsList += `${ingredientText} (${ingredientColor});`;
+        }
+
+        let text = [nth, plate_note, row, col, color, ingredientsList].join('\t');
 
         if (includeBlanks || box.classList.contains('selected-cell')) {
-            plate_str += text+'\n';
+            plate_str += text + '\n';
         }
-        
+
     }
-    
-    textToClipboard(plate_str);
+
+    copyToClipboard(plate_str);
 
     document.getElementById('copy-button').innerHTML = 'Copied!';
-    setTimeout(function() {
+    setTimeout(function () {
         document.getElementById('copy-button').innerHTML = 'Export Plate Map';
     }, 3000);
 
