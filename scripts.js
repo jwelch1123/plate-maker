@@ -39,7 +39,6 @@ function addIngredient() {
     boxCounter++;
 }
 document.addEventListener('DOMContentLoaded', addIngredient);
-//document.getElementById('add-ingredient-button').addEventListener('click', addIngredient);
 
 
 // Functions to handle Grid creation
@@ -63,10 +62,14 @@ function drawGrid() {
 
     for (var i = 0; i < rows; i++) {
         for (var j = 0; j < columns; j++) {
+            // break the box creation out into a seperate function
             var box = document.createElement('div');
             box.classList.add('box');
             box.setAttribute('data-row', i);
             box.setAttribute('data-col', j);
+
+            
+            
             box.addEventListener('mousedown', handleMouseDown);
             box.addEventListener('mouseover', handleMouseMove);
             box.style.backgroundColor = 'white';
@@ -75,30 +78,62 @@ function drawGrid() {
             ingredientHolder.classList.add('ingredient-holder'); 
             box.appendChild(ingredientHolder);
 
-            box.addIngredient = function (ingredient) {
-                var ingredientId = ingredient.id;
-                var ingredientColor = ingredient.querySelector('input[type="color"]').value;
-                var ingredientText = ingredient.querySelector('.text-field').value;
+            box.toggleIngredient = (function (box) {
+                return function (ingredient) {
+                    var ingredientId = ingredient.id;
+                    var ingredientColor = ingredient.querySelector('input[type="color"]').value;
+                    var ingredientText = ingredient.querySelector('.text-field').value;
+                    
+                    var ingredientSquare = document.createElement('div');
+                    ingredientSquare.classList.add('ingredient-square');
 
-                console.log(ingredientId, ingredientColor, ingredientText);
+                    ingredientSquare.dataset.ingredientId = ingredientId;
+                    ingredientSquare.dataset.ingredientColor = ingredientColor;
+                    ingredientSquare.dataset.ingredientText = ingredientText;
+                    ingredientSquare.style.backgroundColor = ingredientColor;
 
-                var ingredientInfo = document.createElement('span');
-                ingredientInfo.classList.add('ingredient-info');
+                    var existingIngredients = box.querySelectorAll('.ingredient-holder .ingredient-square');
+                    var existingFlag = false;
 
-                ingredientInfo.dataset.ingredientId = ingredientId;
-                ingredientInfo.dataset.ingredientColor = ingredientColor;
-                ingredientInfo.dataset.ingredientText = ingredientText;
+                    // print the existing ingredients
+                    console.log(existingFlag);
+                    console.log(existingIngredients);
 
-                this.querySelector('.ingredient-holder').appendChild(ingredientInfo);
 
-            }
+                    // document.querySelectorAll('.ingredient-holder').forEach(holder => {
+                    //     const numIngredients = holder.children.length;
+                    //     const numColumns = Math.ceil(Math.sqrt(numIngredients));
+                    //     holder.style.setProperty('--num-columns', numColumns);
+                    //   });
+
+                    for (var k = 0; k < existingIngredients.length; k++) {
+                        console.log("comparing current to addition: ", existingIngredients[k].dataset.ingredientId, ingredientId);
+
+                        if (existingIngredients[k].dataset.ingredientId == ingredientId) {
+                            console.log("evaluated as already existing Adding")
+                            existingFlag = true;
+                            existingIngredients[k].remove();
+                        } 
+
+                    } 
+
+                    console.log("existing flag: ", existingFlag);
+
+                    if (!existingFlag) {
+                        console.log("no existing match, adding")
+                        console.log("2nd Adding")
+                        box.querySelector('.ingredient-holder').appendChild(ingredientSquare);
+                    }
+                    
+                }
+            })(box);
 
 
             grid.appendChild(box);
         }
     }
 }
-//drawGrid();
+
 document.addEventListener('DOMContentLoaded', drawGrid);
 columnsInput.addEventListener('change', drawGrid);
 rowsInput.addEventListener('change', drawGrid);
@@ -184,11 +219,12 @@ function applyColorLabel(box) {
     var selectedIngredient = document.querySelector('.selected-ingredient');
 
     if (selected) {
-        box.style.backgroundColor = color;
-        box.addIngredient(selectedIngredient);
+        //box.style.backgroundColor = color;
+        box.toggleIngredient(selectedIngredient);
         console.log(box);
     } else {
-        box.style.backgroundColor = ''; // Reset to original CSS styling
+        box.toggleIngredient(selectedIngredient);
+        //box.style.backgroundColor = ''; // Reset to original CSS styling
     }
 }
 
@@ -201,10 +237,10 @@ function toPlateNotation(row, col) {
 // General copy text to clipboard function
 function copyToClipboard(text) {
 
-    // execcommand is deprecated in modern browsers, this should be the way to do it
     navigator.clipboard.writeText(text).then(function () {
+        //execcommand is deprecated in modern browsers, this should be the way to do it
         console.log('Async: Copying to clipboard was successful!');
-    }, function (err) {
+    }, function (err) { // if the clipboard write fails, we can use the old method 
         console.error('Async: Could not copy text: ', err);
         var copyPastePlaceholder = document.createElement("textarea");
         document.body.appendChild(copyPastePlaceholder);

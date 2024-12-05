@@ -1,5 +1,6 @@
 :root {
   --border-style: 1px solid #000000;
+  --grid-background-color: #FFFFFF;
 }
 
 .ingredient-box {
@@ -49,6 +50,28 @@
       aspect-ratio: 1 / 1;
       border: var(--border-style);
       float: left;
-      background-color: #FFFFFF; 
+      background-color: var(--grid-background-color); 
       cursor: pointer;
     }
+
+.ingredient-holder{
+  padding: 5%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(50px,1fr)); /* minmax controls box width*/
+  gap: 5%; /* Area between blocks */ 
+  /* width: 50%; */
+  /* height: 50%; */
+  box-sizing: border-box;
+}
+
+/* Consider just making it across the whole box? */
+
+.ingredient-square{
+  height: 10px;
+  /* height: minmax(5px, 40px); Adjusted height for better spacing */
+  /* aspect-ratio: 1 / 1; */
+  /* border: var(--border-style);  */
+  box-sizing: border-box; /* Removed redundant box-sizing property */
+}
+
+/* https://css-tricks.com/auto-sizing-columns-css-grid-auto-fill-vs-auto-fit/ */
