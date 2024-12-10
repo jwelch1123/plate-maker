@@ -47,7 +47,33 @@ var rowsInput = document.getElementById('rows');
 var grid = document.getElementById('grid');
 
 
-// Add a way to capture what value gets drawn on the cell and then apply the styling from there.
+// Add hover effect for ingredient-box and ingredient-square
+document.addEventListener('mouseover', function (event) {
+    if (event.target.classList.contains('ingredient-box')) {
+        event.target.style.border = '2px solid #000';
+    }
+    if (event.target.classList.contains('ingredient-box')) {
+        const ingredientId = event.target.id;
+        const ingredientSquares = document.querySelectorAll(`.ingredient-square[data-ingredient-id='${ingredientId}']`);
+        ingredientSquares.forEach(square => {
+            square.style.border = '1px solid #000';
+        });
+    }
+});
+
+document.addEventListener('mouseout', function (event) {
+    if (event.target.classList.contains('ingredient-box')) {
+        event.target.style.border = '';
+    }
+    if (event.target.classList.contains('ingredient-box')) {
+        const ingredientId = event.target.id;
+        const ingredientSquares = document.querySelectorAll(`.ingredient-square[data-ingredient-id='${ingredientId}']`);
+        ingredientSquares.forEach(square => {
+            square.style.border = '';
+        });
+    }
+});
+
 
 
 
@@ -95,33 +121,15 @@ function drawGrid() {
                     var existingIngredients = box.querySelectorAll('.ingredient-holder .ingredient-square');
                     var existingFlag = false;
 
-                    // print the existing ingredients
-                    console.log(existingFlag);
-                    console.log(existingIngredients);
-
-
-                    // document.querySelectorAll('.ingredient-holder').forEach(holder => {
-                    //     const numIngredients = holder.children.length;
-                    //     const numColumns = Math.ceil(Math.sqrt(numIngredients));
-                    //     holder.style.setProperty('--num-columns', numColumns);
-                    //   });
 
                     for (var k = 0; k < existingIngredients.length; k++) {
-                        console.log("comparing current to addition: ", existingIngredients[k].dataset.ingredientId, ingredientId);
-
                         if (existingIngredients[k].dataset.ingredientId == ingredientId) {
-                            console.log("evaluated as already existing Adding")
                             existingFlag = true;
                             existingIngredients[k].remove();
                         } 
-
                     } 
 
-                    console.log("existing flag: ", existingFlag);
-
                     if (!existingFlag) {
-                        console.log("no existing match, adding")
-                        console.log("2nd Adding")
                         box.querySelector('.ingredient-holder').appendChild(ingredientSquare);
                     }
                     
