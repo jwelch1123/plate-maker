@@ -31,9 +31,9 @@ function addIngredient() {
     }
     newBox.onclick = function () { toggleSelection(this) };
     newBox.innerHTML = `
-        <input type="color" id='${boxId}-colorbox' name='${boxId}-colorbox' value="${rand_color()}">
-        <input type="text" class="text-field" placeholder="Enter text here...">
-        <button type="delete-button" onclick="deleteIngredientBox(this)">X</button>
+        <input type="color" class="colorbox ingredient-def" id='${boxId}-colorbox' name='${boxId}-colorbox' value="${rand_color()}">
+        <input type="text" class="ingredient-text ingredient-def" placeholder="Add Ingredient...">
+        <button type="delete-button" class="ingredient-def" onclick="deleteIngredientBox(this)">X</button>
         `;
     container.appendChild(newBox);
     boxCounter++;
@@ -105,10 +105,10 @@ function drawGrid() {
             box.appendChild(ingredientHolder);
 
             box.toggleIngredient = (function (box) {
-                return function (ingredient) {
+                return function (ingredient, setall=null) {
                     var ingredientId = ingredient.id;
                     var ingredientColor = ingredient.querySelector('input[type="color"]').value;
-                    var ingredientText = ingredient.querySelector('.text-field').value;
+                    var ingredientText = ingredient.querySelector('.ingredient-text').value;
                     
                     var ingredientSquare = document.createElement('div');
                     ingredientSquare.classList.add('ingredient-square');
@@ -120,6 +120,8 @@ function drawGrid() {
 
                     var existingIngredients = box.querySelectorAll('.ingredient-holder .ingredient-square');
                     var existingFlag = false;
+
+                    // handle the set all flag   
 
 
                     for (var k = 0; k < existingIngredients.length; k++) {

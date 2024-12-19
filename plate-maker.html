@@ -13,40 +13,46 @@
     <h1>Plate Maker</h1>
     <h3>by James Welch - <a href="https://github.com/jwelch1123/plate-maker">Github</a> </h3>
   </div>
-  <div class="container">
-    <div class="sidebar"> 
-      <table> <!-- Table to organize Column & Row: labels & values -->
-        <tr>
-          <td> <label for="columns">Columns:</label> </td>
-          <td> <input class="data-input" type="number" id="columns" name="columns" value="12"> </td>
-        </tr>
-        <tr>
-          <td> <label for="rows">Rows:</label> </td>
-          <td> <input class="data-input" type="number" id="rows" name="rows" value="8"> </td>
-        </tr>
-      </table>
-    
-      <div id="ingredients-container"> <!-- Dynamically Created --> </div>
-      <button id='add-ingredient-button' onclick="addIngredient()">Add Ingredient</button>
+  <!-- paste here -->
+   <div class="container">
+    <div class="sidebar">
+      <div>
+        <table> <!-- Table to organize Column & Row: labels & values -->
+          <tr>
+            <td> <label for="columns">Columns:</label> </td>
+            <td> <input class="data-input" type="number" id="columns" name="columns" value="12"> </td>
+          </tr>
+          <tr>
+            <td> <label for="rows">Rows:</label> </td>
+            <td> <input class="data-input" type="number" id="rows" name="rows" value="8"> </td>
+          </tr>
+        </table>
+      </div>
+      <br>
+      <div class="ingredients-container" >
+        <div  id="ingredients-container"><!-- Dynamically Created --> </div>
+        <button id='add-ingredient-button' class="ingredient-def" onclick="addIngredient()">Add Ingredient</button>
         <!-- had the add as a mini box (half size) below the ingredients -->
-      <br><br>
+      </div>
+      
+
+      <br>
       <div>
         <input type="checkbox" id="include-blank" name="show-letters" value="false">
         <label for="include-blank">Include Blank Cells</label>
         <br>
-        <button id='copy-button' onclick="exportPlateMap()">Export Plate Map</button>
+        <button id='copy-button' onclick="exportPlateMap()">Copy to Excel</button>
       </div>
-
-
     </div>
     <div class="main-panel">
-        <div class='grid' id="grid"><!--Magic--></div>
+      <div class="grid" id="grid"> 
+
+      </div>
     </div>
 
-</div>
-  
-  
-
+   </div>
+   <!-- Remove to here -->
 </body>
 <script src="scripts.js"></script>
+
 </html>

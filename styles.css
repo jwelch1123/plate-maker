@@ -7,95 +7,127 @@
 .container {
   display: flex;
   width: 100%;
-  /* height: 100vh; */
+  height: 100vh;
   box-sizing: border-box;
+  padding: 2%;
+  /* background-color: lightgrey; */
+
 }
 
 .main-panel{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-grow: 1;
-  box-sizing: border-box;
-}
-
-.sidebar{
+  padding: 2%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  width: 200px;
+  flex-grow: 1;
   box-sizing: border-box;
+  /* background-color: lightblue; */
 }
 
-.ingredient-box {
-    /* width: 280px; */
-    /* height: 100%; */
-    margin: 10px;
-    border: var(--border-style);
-    padding: 10px;
-    vertical-align: middle;
-    cursor: pointer;
-  }
+.grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
+  width: 100%;
+  gap: 0px;
+  border: var(--border-style);
+  /* background-color: blue; */
+}
 
-
-.selected-ingredient {
-    background-color: #D3D3D3;
-    opacity: 0.85;
+.box {
+  aspect-ratio: 1 / 1;
+  border: var(--border-style);
+  background-color: var(--grid-background-color); 
+  cursor: pointer;
 }
 
 .selected-cell {
-    background-color: var(--selected-ingredient-color, #808080);
-    /* opacity: 0.85; */
+  background-color: var(--selected-ingredient-color, #808080);
+  /* opacity: 0.85; */
 }
 
-.text-field {
-    display: inline-block;
-    height: 20px;
-    vertical-align: middle;
-  }
-
-.data-input {
-    display: inline-block;
-    height: 15px;
-    width: 30px;
-    vertical-align: middle;
-  }
-
-.grid{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
-    gap: 0px;
-    /* width: 100%;
-    height: 100%; */
-    max-width: 80%; /*cuasing some weird overflows, need to shrink things*/
-    max-height: 80vh;
-    border: var(--border-style);
-    margin: 0 auto;
-  }
-
-.box {
-      aspect-ratio: 1 / 1;
-      border: var(--border-style);
-      background-color: var(--grid-background-color); 
-      cursor: pointer;
-    }
-
 .ingredient-holder{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   padding: 5%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(10px,1fr)); /* minmax controls box width*/
+  grid-template-columns: repeat(auto-fit, minmax(3px,1fr)); /* minmax controls box width*/
   gap: 5%; /* Area between blocks */ 
-  /* width: 50%; */
-  /* height: 50%; */
   box-sizing: border-box;
 }
 
 /* Consider just making it across the whole box? */
 /* need to adjust the minmax*/
 .ingredient-square{
-  height: 10px;
-  /* height: minmax(5px, 40px); Adjusted height for better spacing */
+  min-height: 10px;
+  max-height: 50px; 
+  min-width: 20px;
   /* aspect-ratio: 1 / 1; */
   /* border: var(--border-style);  */
   box-sizing: border-box; /* Removed redundant box-sizing property */
 }
+
+
+.sidebar{
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  /* width: %; */
+  box-sizing: border-box;
+  margin-right: 10px;
+  /* background-color: lightgreen; */
+}
+
+.ingredient-container {
+  display: flex;
+  flex-direction: column;
+  border: var(--border-style);
+}
+
+.ingredient-box {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  padding: 5px;
+  border: var(--border-style);
+  cursor: pointer;
+  min-height: 10px;
+}
+
+.ingredient-def {
+  display: inline-block;
+  /* height: 25px; */
+  margin: 1px;
+  vertical-align: middle;
+}
+
+.colorbox {
+  display: inline-block;
+  width: 30px;
+  flex-shrink: 0; /* Ensure the colorbox does not shrink */
+}
+
+.ingredient-text {
+  display: inline-block;
+  flex-grow: 1; /* Ensure the ingredient-text takes up remaining space */
+  flex-shrink: 1; /* Ensure the element can shrink */
+}
+
+
+/* Ingredient Assignment */
+.selected-ingredient {
+    background-color: #D3D3D3;
+    opacity: 0.85;
+}
+
+  /* Row & Columns */
+.data-input {
+    height: 15px;
+    width: 30px;
+  }
+
+
+
+
+
