@@ -2,8 +2,10 @@ Web tool to design plate maps for high-throughput screening experiments. The too
 
 
 Todo:
-- rows and columns pre-sets
-- ingredient box formating
-- right click to erase
-- paste txt and break into ingredients
-- changing ingredient color changes all instances of that ingredient
+
+- [ ] rows and columns pre-sets
+- [x] fancy add ingredient box
+- [x] ingredient box formatting
+- [ ] right click to erase
+- [ ] paste txt and break into ingredients 
+- [x] changing ingredient color changes all instances of that ingredient

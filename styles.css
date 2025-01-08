@@ -1,6 +1,7 @@
 :root {
   --border-style: 1px solid #000000;
   --grid-background-color: #FFFFFF;
+  --font: Arial, sans-serif;
 }
 
 
@@ -90,7 +91,7 @@
   margin-top: 2%;
   margin-bottom: 2%;
   padding: 5px;
-  border: var(--border-style);
+  border: 2px solid #A9A9A9;
   cursor: pointer;
   min-height: 10px;
 }
@@ -121,11 +122,29 @@
     opacity: 0.85;
 }
 
+.hover-border {
+  border: 1px transparent;
+}
+
+#add-ingredient-button {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 12px;
+  font: Arial;
+}
+
+#add-ingredient-button:hover {
+  background-color: #45a049;
+}
+
+
   /* Row & Columns */
 .data-input {
     height: 15px;
     width: 30px;
   }
+
 
 
 

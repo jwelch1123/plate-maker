@@ -11,12 +11,35 @@ function deleteIngredientBox(element) {
     element.parentNode.remove();
 }
 
-function rand_color() {
+function randomColor() {
     dim_1 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
     dim_2 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');;
     dim_3 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');;
     return '#' + dim_1 + dim_2 + dim_3;
 }
+
+
+function updateBoxColors() {
+    var boxes = document.querySelectorAll('.ingredient-square');
+    for (var i = 0; i < boxes.length; i++) {
+        var box = boxes[i];
+        box.style.backgroundColor = box.dataset.ingredientColor;
+    }
+}
+
+document.addEventListener('input', function(event) {
+    if (event.target.classList.contains('colorbox')) {
+        var box = event.target.closest('.ingredient-box');
+        var ingredientSquares = document.querySelectorAll(`.ingredient-square[data-ingredient-id='${box.id}']`);
+        ingredientSquares.forEach(square => {
+            square.style.backgroundColor = event.target.value;
+            square.dataset.ingredientColor = event.target.value;
+        });
+    }
+});
+
+
+// Add and 
 
 let boxCounter = 0;
 
@@ -25,20 +48,47 @@ function addIngredient() {
     const newBox = document.createElement('div');
     const boxId = 'ingredient-box-' + boxCounter;
     newBox.id = boxId;
-    newBox.className = 'ingredient-box';
+    newBox.className = 'ingredient-box hover-boarder';
     if (boxCounter == 0) {
         newBox.classList.add('selected-ingredient');
     }
     newBox.onclick = function () { toggleSelection(this) };
     newBox.innerHTML = `
-        <input type="color" class="colorbox ingredient-def" id='${boxId}-colorbox' name='${boxId}-colorbox' value="${rand_color()}">
-        <input type="text" class="ingredient-text ingredient-def" placeholder="Add Ingredient...">
-        <button type="delete-button" class="ingredient-def" onclick="deleteIngredientBox(this)">X</button>
+        <input type="color" class="colorbox ingredient-def hover-boarder" id='${boxId}-colorbox' name='${boxId}-colorbox' value="${randomColor()}">
+        <input type="text" class="ingredient-text ingredient-def hover-boarder" placeholder="Ingredient...">
+        <button type="delete-button" class="ingredient-def hover-boarder" onclick="deleteIngredientBox(this)">X</button>
         `;
     container.appendChild(newBox);
     boxCounter++;
 }
 document.addEventListener('DOMContentLoaded', addIngredient);
+
+// Add hover effect for ingredient-box and ingredient-square
+
+document.addEventListener('mouseover', function(event) { toggleIngredientBoarder(event, true); });
+
+document.addEventListener('mouseout', function(event) { toggleIngredientBoarder(event, false); });
+
+
+function toggleIngredientBoarder(event, toggle) {
+    if (event.target.classList.contains('hover-boarder')) {
+        let parentBox = event.target.closest('.ingredient-box');
+        const ingredientSquares = document.querySelectorAll(`.ingredient-square[data-ingredient-id='${parentBox.id}']`);
+        
+            if (toggle) { // add the hover effect
+                parentBox.style.border = '2px solid #000';
+                ingredientSquares.forEach(square => {
+                    square.style.border = '1px solid #000';
+                });
+            } else { // remove the hover effect
+                parentBox.style.border = '';
+                parentBox.style.margin = '';
+                ingredientSquares.forEach(square => {
+                    square.style.border = '1px transparent';
+                });
+            }       
+    }
+}
 
 
 // Functions to handle Grid creation
@@ -46,37 +96,7 @@ var columnsInput = document.getElementById('columns');
 var rowsInput = document.getElementById('rows');
 var grid = document.getElementById('grid');
 
-
-// Add hover effect for ingredient-box and ingredient-square
-document.addEventListener('mouseover', function (event) {
-    if (event.target.classList.contains('ingredient-box')) {
-        event.target.style.border = '2px solid #000';
-    }
-    if (event.target.classList.contains('ingredient-box')) {
-        const ingredientId = event.target.id;
-        const ingredientSquares = document.querySelectorAll(`.ingredient-square[data-ingredient-id='${ingredientId}']`);
-        ingredientSquares.forEach(square => {
-            square.style.border = '1px solid #000';
-        });
-    }
-});
-
-document.addEventListener('mouseout', function (event) {
-    if (event.target.classList.contains('ingredient-box')) {
-        event.target.style.border = '';
-    }
-    if (event.target.classList.contains('ingredient-box')) {
-        const ingredientId = event.target.id;
-        const ingredientSquares = document.querySelectorAll(`.ingredient-square[data-ingredient-id='${ingredientId}']`);
-        ingredientSquares.forEach(square => {
-            square.style.border = '';
-        });
-    }
-});
-
-
-
-
+// Draw the Grid
 function drawGrid() {
     grid.innerHTML = "";
 
