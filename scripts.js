@@ -1,3 +1,26 @@
+
+document.getElementById('plate-type').addEventListener('change', function(event) {rowColSelector(event);});
+
+function rowColSelector() {
+    var plateType = document.getElementById('plate-type').value;
+    var customPlateTable = document.getElementById('custom-plate-table');
+    var rowInput = document.getElementById('rows');
+    var colInput = document.getElementById('columns');
+
+    if (plateType == 'custom') {
+        customPlateTable.style.display = 'block';
+    } else {
+        customPlateTable.style.display = 'none';
+        let rows = plateType.split('x')[0];
+        let cols = plateType.split('x')[1];
+        rowInput.value = rows;
+        colInput.value = cols;
+    }
+    drawGrid();
+}
+
+
+
 // Functions to handel the label colors & Selection
 function toggleSelection(element) {
     var selectableElements = document.querySelectorAll('.selected-ingredient');
@@ -7,26 +30,15 @@ function toggleSelection(element) {
     element.classList.add('selected-ingredient');
 }
 
-function deleteIngredientBox(element) {
-    element.parentNode.remove();
-}
-
 function randomColor() {
     dim_1 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
-    dim_2 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');;
-    dim_3 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');;
+    dim_2 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    dim_3 = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
     return '#' + dim_1 + dim_2 + dim_3;
 }
 
 
-function updateBoxColors() {
-    var boxes = document.querySelectorAll('.ingredient-square');
-    for (var i = 0; i < boxes.length; i++) {
-        var box = boxes[i];
-        box.style.backgroundColor = box.dataset.ingredientColor;
-    }
-}
-
+// Add event listener to the colorbox input to update the color of the ingredient-square
 document.addEventListener('input', function(event) {
     if (event.target.classList.contains('colorbox')) {
         var box = event.target.closest('.ingredient-box');
@@ -39,7 +51,7 @@ document.addEventListener('input', function(event) {
 });
 
 
-// Add and 
+// Add and delete ingredients
 
 let boxCounter = 0;
 
@@ -63,10 +75,21 @@ function addIngredient() {
 }
 document.addEventListener('DOMContentLoaded', addIngredient);
 
+
+function deleteIngredientBox(element) {
+    var box = element.parentNode;
+    var ingredientSquares = document.querySelectorAll(`.ingredient-square[data-ingredient-id='${box.id}']`);
+        ingredientSquares.forEach(square => {
+            square.remove();
+    });
+    element.parentNode.remove();
+
+}
+
+
 // Add hover effect for ingredient-box and ingredient-square
 
 document.addEventListener('mouseover', function(event) { toggleIngredientBoarder(event, true); });
-
 document.addEventListener('mouseout', function(event) { toggleIngredientBoarder(event, false); });
 
 

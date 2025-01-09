@@ -16,8 +16,23 @@
   <!-- paste here -->
    <div class="container">
     <div class="sidebar">
-      <div>
-        <table> <!-- Table to organize Column & Row: labels & values -->
+      <div id="plate-map-settings">
+        <tr>
+          <td><label for="plate-type">Plate Type:</label></td>
+          <td>
+            <select id="plate-type" name="plate-type">
+              <option value="2x3">6-well</option>
+              <option value="3x4">12-well</option>
+              <option value="4x6">24-well</option>
+              <option value="6x8">48-well</option>
+              <option value="8x12" selected>96-well</option>
+              <option value="16x24">384-well</option>
+              <option value="custom">Custom</option>
+            </select>
+          </td>
+        </tr>
+        
+        <table id='custom-plate-table' style="display:none"> <!-- Table to organize Column & Row: labels & values -->
           <tr>
             <td> <label for="columns">Columns:</label> </td>
             <td> <input class="data-input" type="number" id="columns" name="columns" value="12"> </td>
@@ -26,7 +41,7 @@
             <td> <label for="rows">Rows:</label> </td>
             <td> <input class="data-input" type="number" id="rows" name="rows" value="8"> </td>
           </tr>
-        </table>
+          </table>
       </div>
       <br>
       <div class="ingredients-container" >
