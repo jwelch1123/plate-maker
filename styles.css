@@ -51,7 +51,7 @@
   flex-grow: 1;
   padding: 5%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(3px,1fr)); /* minmax controls box width*/
+  grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* Adjusted minmax to control box width */
   gap: 5%; /* Area between blocks */ 
   box-sizing: border-box;
 }
@@ -61,10 +61,8 @@
 .ingredient-square{
   min-height: 10px;
   max-height: 50px; 
-  min-width: 20px;
-  /* aspect-ratio: 1 / 1; */
-  /* border: var(--border-style);  */
-  box-sizing: border-box; /* Removed redundant box-sizing property */
+  /* min-width: 30px; */
+  box-sizing: border-box; 
 }
 
 
@@ -78,10 +76,19 @@
   /* background-color: lightgreen; */
 }
 
-.ingredient-container {
+.ingredient-options-container {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  border: var(--border-style);
+  height: 100%; /* Ensure it takes the full height of its parent */    
+}
+
+#ingredients-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 45%; /* Set the maximum height as a percentage of the parent */
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .ingredient-box {
@@ -93,7 +100,8 @@
   padding: 5px;
   border: 2px solid #A9A9A9;
   cursor: pointer;
-  min-height: 10px;
+  /* min-height: 10px; */
+  box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
 }
 
 .ingredient-def {
@@ -139,6 +147,18 @@
   background-color: #45a049;
 }
 
+#import-ingredient-button {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 12px;
+  font: Arial;
+}
+
+#import-ingredient-button:hover {
+  background-color: #45a049;
+}
+
 
   /* Row & Columns */
 .data-input {
@@ -147,7 +167,47 @@
   }
 
 
+/* Modal */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
 
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
 
+#ingredient-input {
+  width: 100%;
+  height: 200px;
+  max-width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
 
+.close {
+  color: #aaaaaa;
+  /* float: right; */
+  font-size: 28px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.close:hover{
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
 

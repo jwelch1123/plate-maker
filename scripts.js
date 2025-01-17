@@ -1,4 +1,10 @@
 
+
+const mainContainer = document.getElementsByClassName('container')[0];
+mainContainer.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+});
+
 document.getElementById('plate-type').addEventListener('change', function(event) {rowColSelector(event);});
 
 function rowColSelector() {
@@ -52,10 +58,9 @@ document.addEventListener('input', function(event) {
 
 
 // Add and delete ingredients
-
 let boxCounter = 0;
 
-function addIngredient() {
+function addIngredient(ingredientText = '') {
     const container = document.getElementById('ingredients-container');
     const newBox = document.createElement('div');
     const boxId = 'ingredient-box-' + boxCounter;
@@ -67,24 +72,69 @@ function addIngredient() {
     newBox.onclick = function () { toggleSelection(this) };
     newBox.innerHTML = `
         <input type="color" class="colorbox ingredient-def hover-boarder" id='${boxId}-colorbox' name='${boxId}-colorbox' value="${randomColor()}">
-        <input type="text" class="ingredient-text ingredient-def hover-boarder" placeholder="Ingredient...">
+        <input type="text" class="ingredient-text ingredient-def hover-boarder" placeholder="Ingredient..." value="${ingredientText}">
         <button type="delete-button" class="ingredient-def hover-boarder" onclick="deleteIngredientBox(this)">X</button>
         `;
     container.appendChild(newBox);
     boxCounter++;
 }
-document.addEventListener('DOMContentLoaded', addIngredient);
+document.addEventListener('DOMContentLoaded', addIngredient());
 
 
 function deleteIngredientBox(element) {
-    var box = element.parentNode;
+    var box = element.closest('.ingredient-box');
     var ingredientSquares = document.querySelectorAll(`.ingredient-square[data-ingredient-id='${box.id}']`);
         ingredientSquares.forEach(square => {
             square.remove();
     });
-    element.parentNode.remove();
-
+    box.remove();
 }
+
+var informationBUtton = document.getElementById('information-button');
+var informationModal = document.getElementById('information-modal');
+
+informationBUtton.onclick = function() {
+    informationModal.style.display = 'block';
+}
+
+// Import ingredients
+var modal = document.getElementById('import-modal');
+var importButton = document.getElementById('import-ingredient-button');
+var closeButton = document.getElementsByClassName('close')[0];
+
+importButton.onclick = function() {
+    modal.style.display = 'block';
+}
+
+closeButton.onclick = function() {
+    var ingredientList = document.getElementById('ingredient-input').value;
+    importIngredient(ingredientList);
+    document.getElementById('ingredient-input').value = '';
+    modal.style.display = 'none';
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function importIngredient(importString) {
+
+    let newestIngredient = document.getElementById('ingredients-container').lastElementChild;
+    if (newestIngredient && newestIngredient.querySelector('.ingredient-text').value.trim() === '') {
+        deleteIngredientBox(newestIngredient);
+    }
+
+    var lines = importString.split('\n');
+    lines.forEach(line => {
+        if (line.trim() != ''){
+            addIngredient(ingredientText = line.trim());
+        }
+    });
+    
+}
+
 
 
 // Add hover effect for ingredient-box and ingredient-square
@@ -148,7 +198,7 @@ function drawGrid() {
             box.appendChild(ingredientHolder);
 
             box.toggleIngredient = (function (box) {
-                return function (ingredient, setall=null) {
+                return function (ingredient, clearIngredients=false) {
                     var ingredientId = ingredient.id;
                     var ingredientColor = ingredient.querySelector('input[type="color"]').value;
                     var ingredientText = ingredient.querySelector('.ingredient-text').value;
@@ -161,20 +211,40 @@ function drawGrid() {
                     ingredientSquare.dataset.ingredientText = ingredientText;
                     ingredientSquare.style.backgroundColor = ingredientColor;
 
+                    var ingredientHolder = box.querySelector('.ingredient-holder');
                     var existingIngredients = box.querySelectorAll('.ingredient-holder .ingredient-square');
                     var existingFlag = false;
 
-                    // handle the set all flag   
+                    console.log("Applying toggle to box, clear value: ", clearIngredients);
 
+                    if (clearIngredients) {
+                        console.log("Setting interior to empty");
+                        console.log(box.querySelector('.ingredient-holder'));
+                        // ingredientHolder.removeChild(ingredientHolder.firstChild);
+                        existingIngredients.forEach(ingredient => {
+                            console.log("removing child new way: ", ingredient);
+                            ingredient.remove();
+                        });
+                        
+                        // while (ingredientHolder.firstChild) {
+                        //     console.log("Removing child");
+                        //     ingredientHolder.removeChild();
+                        // }
+                        existingFlag = true;
 
-                    for (var k = 0; k < existingIngredients.length; k++) {
-                        if (existingIngredients[k].dataset.ingredientId == ingredientId) {
-                            existingFlag = true;
-                            existingIngredients[k].remove();
-                        } 
-                    } 
+                        console.log(ingredientHolder);
+                    } else {
+                        for (var k = 0; k < existingIngredients.length; k++) {
+                            if (existingIngredients[k].dataset.ingredientId == ingredientId || clearIngredients) {
+                                existingFlag = true;
+                                console.log("About to remove this normal way :", existingIngredients[k]);
+                                existingIngredients[k].remove();
+                            }
+                        }
+                    }
 
                     if (!existingFlag) {
+                        console.log("adding ingredient")
                         box.querySelector('.ingredient-holder').appendChild(ingredientSquare);
                     }
                     
@@ -192,9 +262,9 @@ columnsInput.addEventListener('change', drawGrid);
 rowsInput.addEventListener('change', drawGrid);
 
 
-
 // Functions to handle the mouse detection
 var isMouseDown = false;
+var mouseButton = -1;
 var startRowIndex = null;
 var startColIndex = null;
 var selectedBoxes = [];
@@ -218,7 +288,8 @@ function selectTo(box) {
                     cell.classList.add('selected-cell');
                 }
                 selectedBoxes.push(cell);
-                applyColorLabel(cell);
+                console.log("Toggling box through selectTo")
+                applyColorLabel(cell, clearIngredients = mouseButton == 2);
             }
         }
     }
@@ -226,6 +297,7 @@ function selectTo(box) {
 
 function handleMouseDown(event) {
     isMouseDown = true;
+    mouseButton = event.button;
     selectedBoxes = [];
     var box = this;
 
@@ -237,8 +309,10 @@ function handleMouseDown(event) {
     } else {
         box.classList.add('selected-cell');
     }
+    
     selectedBoxes.push(box);
-    applyColorLabel(box);
+    console.log("Toggling box through handleMouseDown");
+    applyColorLabel(box, clearIngredients = mouseButton == 2);
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -256,30 +330,30 @@ function handleMouseMove(event) {
 
 function handleMouseUp() {
     isMouseDown = false;
+    mouseButton = -1;
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
 }
 
 document.addEventListener('mouseup', function () {
     isMouseDown = false;
+    mouseButton = -1;
 });
 
 
 // Function to handle box color change
-function applyColorLabel(box) {
+function applyColorLabel(box, clearIngredients=false) {
     var color = document.querySelector('.selected-ingredient').querySelector('input[type="color"]').value;
     var selected = box.classList.contains('selected-cell');
     var selectedIngredient = document.querySelector('.selected-ingredient');
 
-    if (selected) {
-        //box.style.backgroundColor = color;
-        box.toggleIngredient(selectedIngredient);
-        console.log(box);
-    } else {
-        box.toggleIngredient(selectedIngredient);
-        //box.style.backgroundColor = ''; // Reset to original CSS styling
-    }
+    // this is a singlet...
+    box.toggleIngredient(selectedIngredient, clearIngredients=clearIngredients); 
+
 }
+
+
+
 
 
 // Create the standardized plate notation
@@ -291,9 +365,8 @@ function toPlateNotation(row, col) {
 function copyToClipboard(text) {
 
     navigator.clipboard.writeText(text).then(function () {
-        //execcommand is deprecated in modern browsers, this should be the way to do it
         console.log('Async: Copying to clipboard was successful!');
-    }, function (err) { // if the clipboard write fails, we can use the old method 
+    }).catch(function (err) { // if the clipboard write fails, we can use the old method 
         console.error('Async: Could not copy text: ', err);
         var copyPastePlaceholder = document.createElement("textarea");
         document.body.appendChild(copyPastePlaceholder);
@@ -312,7 +385,8 @@ function exportPlateMap() {
     var bkgdColor = grid.style.backgroundColor;
 
     var plate_str = '';
-    var label = ["Well ID", "Well Coordinate", "Row", "Column", "Color", "Ingredients"].join('\t') + '\n';
+    // var label = ["Well ID", "Well Coordinate", "Row", "Column", "Color", "Ingredients"].join('\t') + '\n';
+    var label = ["Well ID", "Well Coordinate", "Row", "Column", "Ingredients"].join('\t') + '\n';
     plate_str += label;
 
     for (var i = 0; i < boxes.length; i++) {
@@ -321,21 +395,24 @@ function exportPlateMap() {
         let plate_note = toPlateNotation(box.dataset.row, box.dataset.col);
         let row = parseInt(box.dataset.row) + 1;
         let col = parseInt(box.dataset.col) + 1;
-        let color = box.style.backgroundColor;
-
-        let ingredients = box.querySelectorAll('.ingredient-info');
+        //let color = box.style.backgroundColor;
+        let ingredients = box.querySelectorAll('.ingredient-holder .ingredient-square');
         let ingredientsList = '';
+
         for (var j = 0; j < ingredients.length; j++) {
             let ingredient = ingredients[j];
             let ingredientId = ingredient.dataset.ingredientId;
-            let ingredientColor = ingredient.dataset.ingredientColor;
-            let ingredientText = ingredient.dataset.ingredientText;
-            ingredientsList += `${ingredientText} (${ingredientColor});`;
+            //let ingredientColor = ingredient.dataset.ingredientColor;
+            let ingredientText = ingredient.dataset.ingredientText;         // This needs to be retreived dynamically
+            //ingredientsList += `${ingredientText} (${ingredientColor});`;
+            ingredientsList += `${ingredientText}; `;
         }
 
-        let text = [nth, plate_note, row, col, color, ingredientsList].join('\t');
+        //let text = [nth, plate_note, row, col, color, ingredientsList].join('\t');
+        let text = [nth, plate_note, row, col, ingredientsList.trim()].join('\t');
 
-        if (includeBlanks || box.classList.contains('selected-cell')) {
+        if (includeBlanks || ingredients.length > 0) {
+            console.log("Adding text to plate_str: ", text);
             plate_str += text + '\n';
         }
 

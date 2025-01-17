@@ -7,6 +7,6 @@ Todo:
 - [x] fancy add ingredient box
 - [x] ingredient box formatting
 - [ ] right click to erase
-- [ ] paste txt and break into ingredients 
+- [x] paste txt and break into ingredients 
 - [x] changing ingredient color changes all instances of that ingredient
 - [x] deleting an ingredient removes it from the grid
