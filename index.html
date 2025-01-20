@@ -59,9 +59,9 @@
       </div>
       <br>
       <div class="ingredient-options-container" >
-        <div id="import-ingredient-button" class="ingredient-box hover-boarder">Import Ingredient</div>
+        <div id="import-ingredient-button" class="ingredient-box hover-boarder">Import Ingredients</div>
         <div id="ingredients-container"><!-- Dynamically Created --> </div>
-        <div id="add-ingredient-button" class="ingredient-box hover-boarder" onclick="addIngredient()">Add Ingredient</div>
+        <div id="add-ingredient-button" class="ingredient-box hover-boarder" onclick="addIngredient()">Add New Ingredient</div>
         <br>
         <div>
           <input type="checkbox" id="include-blank" name="show-letters" value="false">
@@ -71,7 +71,7 @@
         </div>
       </div>
       
-      <div id="import-modal" class="modal">
+      <div id="import-modal" class="modal"> <!-- Modal is invisible until it is popped up by the import button -->
         <div class="modal-content">
           <p>Each line will be entered as its own ingredient.</p>
           <div>
