@@ -90,10 +90,11 @@ function deleteIngredientBox(element) {
     box.remove();
 }
 
-var informationBUtton = document.getElementById('information-button');
+// Information Box
+var informationButton = document.getElementById('information-button');
 var informationModal = document.getElementById('information-modal');
 
-informationBUtton.onclick = function() {
+informationButton.onclick = function() {
     informationModal.style.display = 'block';
 }
 
@@ -116,6 +117,9 @@ closeButton.onclick = function() {
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = 'none';
+    }
+    if (event.target == informationModal) {
+        informationModal.style.display = 'none';
     }
 }
 
@@ -420,9 +424,10 @@ function exportPlateMap() {
 
     copyToClipboard(plate_str);
 
+    copyButtonText = document.getElementById('copy-button').innerHTML;
     document.getElementById('copy-button').innerHTML = 'Copied!';
     setTimeout(function () {
-        document.getElementById('copy-button').innerHTML = 'Export Plate Map';
+        document.getElementById('copy-button').innerHTML = copyButtonText;
     }, 3000);
 
 }
