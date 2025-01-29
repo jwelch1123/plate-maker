@@ -8,88 +8,88 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
-  <div>
-    <h1>Plate Maker</h1>
-    <h3>by James Welch - <a href="https://github.com/jwelch1123/plate-maker">Github</a> - <u><span id="information-button">User Guide</span></u></h3>
-  </div>
-  <div id="information-modal" class="modal">
-    <div class="modal-content">
-      <p>I built this app to help scientists plan their plate based experiments.</p>
-      <p>Instructions:</p>
-      <ul>
-        <li>Use the plate type menu to pick a common plate size or make a custom one.</li>
-        <li>Ingredients can be added or removed; and given labels and distinct colors.</li>
-        <li>Select an ingredient and left-click to place it, you can drag too.</li>
-        <li>Multiple ingredients can be added to a single cell, right click to remove them all.</li>
-        <li>If you already have ingredients written out, you can bulk import them.</li>
-        <li>The plate can be copied to your clipboard for easy pasting to excel.</li>
-      </ul>
-      <p> Thanks for using my app! Click away from this window to exit it. Good experimenting!</p>
+<body id="body">
+  <div class = "center-content">
+    <div>
+      <h1>Plate Maker</h1>
+      <h3>by James Welch - <a href="https://github.com/jwelch1123/plate-maker">Github</a> - <u><span id="information-button">User Guide</span></u></h3>
     </div>
-  </div>
-  <div class="container">
-    <div class="sidebar">
-      <div id="plate-map-settings">
-        <tr>
-          <td><label for="plate-type">Plate Type:</label></td>
-          <td>
-            <select id="plate-type" name="plate-type">
-              <option value="2x3">6-well</option>
-              <option value="3x4">12-well</option>
-              <option value="4x6">24-well</option>
-              <option value="6x8">48-well</option>
-              <option value="8x12" selected>96-well</option>
-              <option value="16x24">384-well</option>
-              <option value="custom">Custom</option>
-            </select>
-          </td>
-        </tr>
-        
-        <table id='custom-plate-table' style="display:none"> <!-- Table to organize Column & Row: labels & values -->
-          <tr>
-            <td> <label for="columns">Columns:</label> </td>
-            <td> <input class="data-input" type="number" id="columns" name="columns" value="12"> </td>
-          </tr>
-          <tr>
-            <td> <label for="rows">Rows:</label> </td>
-            <td> <input class="data-input" type="number" id="rows" name="rows" value="8"> </td>
-          </tr>
-          </table>
+    <div id="information-modal" class="modal">
+      <div class="modal-content">
+        <p>I built this app to help scientists plan their plate based experiments.</p>
+        <p>Instructions:</p>
+        <ul>
+          <li>Use the plate type menu to pick a common plate size or make a custom one.</li>
+          <li>Ingredients can be added or removed; and given labels and distinct colors.</li>
+          <li>Select an ingredient and left-click to place it, you can drag too.</li>
+          <li>Multiple ingredients can be added to a single cell, right click to remove them all.</li>
+          <li>If you already have ingredients written out, you can bulk import them.</li>
+          <li>The plate can be copied to your clipboard for easy pasting to excel.</li>
+        </ul>
+        <p> Thanks for using my app! Click away from this window to exit it. Good experimenting!</p>
       </div>
-      <br>
-      <div class="ingredient-options-container" >
-        <div id="import-ingredient-button" class="ingredient-box hover-boarder">Import Ingredients</div>
-        <div id="ingredients-container"><!-- Dynamically Created --> </div>
-        <div id="add-ingredient-button" class="ingredient-box hover-boarder" onclick="addIngredient()">Add New Ingredient</div>
+    </div>
+    <div class="container">
+      <div class="sidebar">
+        <div id="plate-map-settings">
+          <tr>
+            <td><label for="plate-type">Plate Type:</label></td>
+            <td>
+              <select id="plate-type" name="plate-type">
+                <option value="2x3">6-well</option>
+                <option value="3x4">12-well</option>
+                <option value="4x6">24-well</option>
+                <option value="6x8">48-well</option>
+                <option value="8x12" selected>96-well</option>
+                <option value="16x24">384-well</option>
+                <option value="custom">Custom</option>
+              </select>
+            </td>
+          </tr>
+    
+          <table id='custom-plate-table' style="display:none"> <!-- Table to organize Column & Row: labels & values -->
+            <tr>
+              <td> <label for="columns">Columns:</label> </td>
+              <td> <input class="data-input" type="number" id="columns" name="columns" value="12"> </td>
+            </tr>
+            <tr>
+              <td> <label for="rows">Rows:</label> </td>
+              <td> <input class="data-input" type="number" id="rows" name="rows" value="8"> </td>
+            </tr>
+            </table>
+        </div>
         <br>
-        <div>
-          <input type="checkbox" id="include-blank" name="show-letters" value="false">
-          <label for="include-blank">Include Blank Cells</label>
+        <div class="ingredient-options-container" >
+          <div id="import-ingredient-button" class="ingredient-box hover-boarder">Import Ingredients</div>
+          <div id="ingredients-container"><!-- Dynamically Created --> </div>
+          <div id="add-ingredient-button" class="ingredient-box hover-boarder" onclick="addIngredient()">Add New Ingredient</div>
           <br>
-          <button id='copy-button' onclick="exportPlateMap()">Copy to Excel</button>
-        </div>
-      </div>
-      
-      <div id="import-modal" class="modal"> <!-- Modal is invisible until it is popped up by the import button -->
-        <div class="modal-content">
-          <p>Each line will be entered as its own ingredient.</p>
           <div>
-            <textarea id="ingredient-input" name="ingredient-input" placeholder="Ingredients to Import" style="resize: vertical;"></textarea>
+            <input type="checkbox" id="include-blank" name="show-letters" value="false">
+            <label for="include-blank">Include Blank Cells</label>
+            <br>
+            <button id='copy-button' onclick="exportPlateMap()">Copy to Excel</button>
           </div>
-          <br>
-          <div class="close">Import</div>  
+        </div>
+    
+        <div id="import-modal" class="modal"> <!-- Modal is invisible until it is popped up by the import button -->
+          <div class="modal-content">
+            <p>Each line will be entered as its own ingredient.</p>
+            <div>
+              <textarea id="ingredient-input" name="ingredient-input" placeholder="Ingredients to Import" style="resize: vertical;"></textarea>
+            </div>
+            <br>
+            <div class="close">Import</div>
+          </div>
+        </div>
+        <br>
+    
+      </div>
+      <div class="main-panel">
+        <div class="grid" id="grid">
         </div>
       </div>
-      <br>
-      
     </div>
-    <div class="main-panel">
-      <div class="grid" id="grid"> 
-
-      </div>
-    </div>
-
   </div>
 </body>
 <script src="scripts.js"></script>

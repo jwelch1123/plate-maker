@@ -4,6 +4,20 @@
   --font: Arial, sans-serif;
 }
 
+#body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.center-content {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1600px; 
+  min-width: 800px;
+}
 
 .container {
   display: flex;
@@ -11,7 +25,6 @@
   height: 100vh;
   box-sizing: border-box;
   padding: 2%;
-  /* background-color: lightgrey; */
 
 }
 
@@ -27,8 +40,8 @@
 
 .grid{ /* Grid container, boxes drawn seperate from this sizing */
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
-  width: 100%;
+  grid-template-columns: repeat(auto-fill, 1fr);
+  /* width: 52%; */
   max-height: 100%;
   gap: 0px;
   border: var(--border-style);
@@ -50,7 +63,7 @@
 .ingredient-holder{
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  /* flex-grow: 1; */
   padding: 5%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* Adjusted minmax to control box width */
@@ -61,9 +74,7 @@
 /* Consider just making it across the whole box? */
 /* need to adjust the minmax*/
 .ingredient-square{
-  min-height: 10px;
-  max-height: 50px; 
-  /* min-width: 30px; */
+  height: 10px;
   box-sizing: border-box; 
 }
 
