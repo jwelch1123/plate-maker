@@ -132,11 +132,22 @@ function importIngredient(importString) {
 
     var lines = importString.split('\n');
     lines.forEach(line => {
-        if (line.trim() != ''){
-            addIngredient(ingredientText = line.trim());
+        if (line.trim() != '') {
+            let sanitizedLine = escapeHtml(line.trim());
+            addIngredient(ingredientText = sanitizedLine);
         }
     });
     
+}
+
+// helper function to escape HTML special characters
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
