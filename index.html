@@ -14,7 +14,7 @@
       <h1>Plate Maker</h1>
       <h3>by James Welch - <a href="https://github.com/jwelch1123/plate-maker">Github</a> - <u><span id="information-button">User Guide</span></u></h3>
     </div>
-    <div id="information-modal" class="modal">
+    <div id="information-modal" class="modal"> <!-- Modal is invisible until it is popped up by a click -->
       <div class="modal-content">
         <p>I built this app to help scientists plan their plate based experiments.</p>
         <p>Instructions:</p>
@@ -62,13 +62,10 @@
         <div class="ingredient-options-container" >
           <div id="import-ingredient-button" class="ingredient-box hover-boarder">Import Ingredients</div>
           <div id="ingredients-container"><!-- Dynamically Created --> </div>
-          <div id="add-ingredient-button" class="ingredient-box hover-boarder" onclick="addIngredient()">Add New Ingredient</div>
+          <div id="add-ingredient-button" class="ingredient-box hover-boarder" onclick="addIngredient()">Add Additional Ingredient</div>
           <br>
           <div>
-            <input type="checkbox" id="include-blank" name="show-letters" value="false">
-            <label for="include-blank">Include Blank Cells</label>
-            <br>
-            <button id='copy-button' onclick="exportPlateMap()">Copy to Excel</button>
+            <div id="export-plate" class="ingredient-box hover-boarder">Export Plate</div>
           </div>
         </div>
     
@@ -79,9 +76,26 @@
               <textarea id="ingredient-input" name="ingredient-input" placeholder="Ingredients to Import" style="resize: vertical;"></textarea>
             </div>
             <br>
-            <div class="close">Import</div>
+            <div class="close" onclick="importCloseButtonActions()">Import</div>
           </div>
         </div>
+
+        <div id="export-modal" class="modal"> <!-- Modal is invisible until it is popped up by the export button -->
+          <div class="modal-content">
+            <p>Export Options:</p>
+            <div>
+              <br>
+              <input type="checkbox" id="include-blank" name="show-letters" value="false">
+              <label for="include-blank">Include Blank Cells</label>
+              <br><br>
+              <input type="radio" id="export-clipboard" name='export-type' value="clipboard" checked>
+              <label for="export-type">Copy to Clipboard</label>
+            </div>
+            <br>
+            <div class="close" onclick="exportCloseButtonActions()">Export</div>
+          </div>
+        </div>
+
         <br>
     
       </div>

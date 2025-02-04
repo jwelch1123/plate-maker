@@ -98,35 +98,54 @@ informationButton.onclick = function() {
     informationModal.style.display = 'block';
 }
 
+// Export Ingredients
+var exportButton = document.getElementById('export-plate');
+var exportModal = document.getElementById('export-modal');
+
+exportButton.onclick = function() {
+    exportModal.style.display = 'block';
+}
+
 // Import ingredients
-var modal = document.getElementById('import-modal');
+var importModal = document.getElementById('import-modal');
 var importButton = document.getElementById('import-ingredient-button');
 var closeButton = document.getElementsByClassName('close')[0];
 
-importButton.onclick = function() {
-    modal.style.display = 'block';
+importButton.onclick = function() { // all the style to block could be combined.
+    importModal.style.display = 'block';
 }
 
-closeButton.onclick = function() {
+function importCloseButtonActions() {
     var ingredientList = document.getElementById('ingredient-input').value;
     importIngredient(ingredientList);
     document.getElementById('ingredient-input').value = '';
-    modal.style.display = 'none';
 }
 
+function exportCloseButtonActions() {
+    // for some reason the close class doesn't work for the button
+    exportModal.style.display = 'none';
+    exportPlateMap();
+}
+
+closeButton.addEventListener('click', function() {
+    exportModal.style.display = 'none';
+    importModal.style.display = 'none';
+    informationModal.style.display = 'none';
+});
+
+// Close modals if clicked away
 window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
-    if (event.target == informationModal) {
-        informationModal.style.display = 'none';
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
     }
 }
 
 function importIngredient(importString) {
 
     let newestIngredient = document.getElementById('ingredients-container').lastElementChild;
-    if (newestIngredient && newestIngredient.querySelector('.ingredient-text').value.trim() === '') {
+    if (newestIngredient && 
+        newestIngredient.querySelector('.ingredient-text').value.trim() === '' && 
+        importString.trim() != '') {
         deleteIngredientBox(newestIngredient);
     }
 
@@ -230,7 +249,7 @@ function drawGrid() {
                     var existingIngredients = box.querySelectorAll('.ingredient-holder .ingredient-square');
                     var existingFlag = false;
 
-                    console.log("Applying toggle to box, clear value: ", clearIngredients);
+                    //console.log("Applying toggle to box, clear value: ", clearIngredients);
 
                     if (clearIngredients) {
                         console.log("Setting interior to empty");
@@ -259,7 +278,7 @@ function drawGrid() {
                     }
 
                     if (!existingFlag) {
-                        console.log("adding ingredient")
+                        //console.log("adding ingredient")
                         box.querySelector('.ingredient-holder').appendChild(ingredientSquare);
                     }
                     
@@ -303,7 +322,7 @@ function selectTo(box) {
                     cell.classList.add('selected-cell');
                 }
                 selectedBoxes.push(cell);
-                console.log("Toggling box through selectTo")
+                //console.log("Toggling box through selectTo")
                 applyColorLabel(cell, clearIngredients = mouseButton == 2);
             }
         }
@@ -326,7 +345,7 @@ function handleMouseDown(event) {
     }
     
     selectedBoxes.push(box);
-    console.log("Toggling box through handleMouseDown");
+    //console.log("Toggling box through handleMouseDown");
     applyColorLabel(box, clearIngredients = mouseButton == 2);
 
     document.addEventListener('mousemove', handleMouseMove);
@@ -417,9 +436,12 @@ function exportPlateMap() {
         for (var j = 0; j < ingredients.length; j++) {
             let ingredient = ingredients[j];
             let ingredientId = ingredient.dataset.ingredientId;
+            let ingredientNum = ingredientId.split('-')[2]; // bad practice
             //let ingredientColor = ingredient.dataset.ingredientColor;
             let ingredientText = ingredient.dataset.ingredientText;         // This needs to be retreived dynamically
-            //ingredientsList += `${ingredientText} (${ingredientColor});`;
+            if (ingredientText == '') {
+                ingredientText = "Ingredient-"+ingredientNum;
+            }
             ingredientsList += `${ingredientText}; `;
         }
 
@@ -435,10 +457,10 @@ function exportPlateMap() {
 
     copyToClipboard(plate_str);
 
-    copyButtonText = document.getElementById('copy-button').innerHTML;
-    document.getElementById('copy-button').innerHTML = 'Copied!';
-    setTimeout(function () {
-        document.getElementById('copy-button').innerHTML = copyButtonText;
-    }, 3000);
+    //copyButtonText = document.getElementById('copy-button').innerHTML;
+    //document.getElementById('copy-button').innerHTML = 'Copied!';
+    // setTimeout(function () {
+    //     document.getElementById('copy-button').innerHTML = copyButtonText;
+    // }, 3000);
 
 }

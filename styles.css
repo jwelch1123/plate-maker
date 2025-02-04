@@ -1,7 +1,7 @@
 :root {
   --border-style: 1px solid #000000;
   --grid-background-color: #FFFFFF;
-  --font: Arial, sans-serif;
+  /* --font: Arial, sans-serif; */
 }
 
 #body {
@@ -147,13 +147,13 @@
   border: 1px transparent;
 }
 
-
+/* These three can be combined as classes */
 #add-ingredient-button {
   display: block;
   margin: 0 auto;
   text-align: center;
   font-size: 12px;
-  font: Arial;
+  /* font: Arial; */
 }
 
 #add-ingredient-button:hover {
@@ -165,10 +165,22 @@
   margin: 0 auto;
   text-align: center;
   font-size: 12px;
-  font: Arial;
+  /* font: Arial; */
 }
 
 #import-ingredient-button:hover {
+  background-color: #45a049;
+}
+
+#export-plate {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 12px;
+  /* font: Arial; */
+}
+
+#export-plate:hover {
   background-color: #45a049;
 }
 
@@ -199,7 +211,9 @@
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 60%; /* Could be more or less, depending on screen size */
+  max-width: 800px;
+  min-width: 500px;
 }
 
 #ingredient-input {
