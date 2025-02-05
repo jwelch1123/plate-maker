@@ -457,10 +457,12 @@ function exportPlateMap() {
 
     copyToClipboard(plate_str);
 
-    //copyButtonText = document.getElementById('copy-button').innerHTML;
-    //document.getElementById('copy-button').innerHTML = 'Copied!';
-    // setTimeout(function () {
-    //     document.getElementById('copy-button').innerHTML = copyButtonText;
-    // }, 3000);
+    exportPopupButton = document.getElementById('export-plate').innerHTML;
+    document.getElementById('export-plate').innerHTML = 'Copied to Clipboard';
+    document.getElementById('export-plate').style.backgroundColor = '#45a049';
+    setTimeout(function () {
+        document.getElementById('export-plate').innerHTML = exportPopupButton;
+        document.getElementById('export-plate').style.backgroundColor = '';
+    }, 3000);
 
 }
